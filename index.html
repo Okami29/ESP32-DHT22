@@ -1,0 +1,69 @@
+<!-- ESP32 Temperature and Humidity Monitoring Dashboard -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Temperature and Humidity Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f4f9;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            display: inline-block;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .value {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+        .alert {
+            color: red;
+            font-weight: bold;
+        }
+        .normal {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        function updateData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('temperature').innerText = data.temperature + ' °C';
+                    document.getElementById('humidity').innerText = data.humidity + ' %';
+                    if (data.humidityStatus === 'low' || data.humidityStatus === 'high') {
+                        document.getElementById('humidity-alert').innerText = 'Humidity is ' + data.humidityStatus + '!';
+                        document.getElementById('humidity-alert').className = 'alert';
+                    } else {
+                        document.getElementById('humidity-alert').innerText = 'Humidity is normal';
+                        document.getElementById('humidity-alert').className = 'normal';
+                    }
+                });
+        }
+        setInterval(updateData, 2000);
+    </script>
+</head>
+<body>
+    <h1>ESP32 Temperature and Humidity Monitoring</h1>
+    <div class="container">
+        <div>Temperature:</div>
+        <div class="value" id="temperature">-- °C</div>
+        <div>Humidity:</div>
+        <div class="value" id="humidity">-- %</div>
+        <div id="humidity-alert" class="normal">Loading...</div>
+    </div>
+</body>
+</html>
